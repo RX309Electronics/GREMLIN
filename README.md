@@ -18,8 +18,8 @@ A Full working embedded linux distro with:
 - smaller format than most typical Distro's
 - possibility to run as a ramdisk
 - user customisability in mind
-- Splash screen support
-- Customisable Services/Tasks to be run on startup (placeable in /Services).
+- Customisable Services/Tasks to be run on startup (placeable in /System/Services).
+- Customisable Application binaries can be run by placing them in /System/Application
 
 You can always shrink it down or expand functionality, but my primary requirements where that it could support graphical (python) Applications and had working audio/sound and touchscreen or mouse input. And that it had 2 stage init. Stage1 init would be the basic low level linux stuff, and stage2 init would run startup scripts and applications from '/Services', so it could start applications on boot. Simple to use by dropping files with this syntax: 'S{service_nr}{service_name}' example: 'S30Foobar' in the '/Services' folder. It will then start stage2 init in xterm and after that, your application can take over the screen and Xorg server. On boot, you will see the classic old-era linux boot screen, where you have tux the penguin in the top left corner of the framebuffer and depending on how many threads your cpu has, that amount of tuxes will be shown. Modern distros hide it behind a plymouth splash screen, or have only boring raw text when booting up. This distro also supports a splash screen but for me its not really needed now, but you can add it, by enabling the S01splash service, by setting the executable flag. You can customise tux the penguin and even replace the linux penguin with your own logo to be shown on the framebuffer. To do this, simply change the linux.png image in buildroot-external with your own .png image and recompile the kernel by executing 'make linux-dirclean' and after that running './build.sh' in the project folder.  
 
