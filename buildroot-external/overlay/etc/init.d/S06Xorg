@@ -1,0 +1,82 @@
+#!/bin/sh
+
+XORG_EXEC="/usr/bin/Xorg"
+XORG_ARGS=" :0.0 vt01 -s 0 -noreset -allowMouseOpenFail"
+XORG_PIDFILE="/var/run/xorg.pid"
+XORG_LOG_FILE="/var/log/Xorg.log"
+XTERM_EXEC="/System/Services/Services.sh start; exec sh"
+
+start() {
+    echo "Starting Xorg..."
+    sleep 1
+
+    # Check if already running
+    if [ -f "$XORG_PIDFILE" ] && kill -0 $(cat "$XORG_PIDFILE") 2>/dev/null; then
+        echo "Xorg is already running."
+        return 0
+    fi
+
+    # Start Xorg in background and save PID
+    $XORG_EXEC $XORG_ARGS >> "$XORG_LOG_FILE" 2>&1 &
+    echo $! > "$XORG_PIDFILE"
+
+    # Give Xorg a moment to start
+    sleep 1
+    export DISPLAY=:0.0
+
+    xterm -e "$XTERM_EXEC" &
+
+
+}
+
+stop() {
+    echo "Stopping Xorg GUI..."
+
+    if [ ! -f "$PIDFILE" ]; then
+        echo "No PID file found, Xorg might not be running."
+        return 0
+    fi
+
+    PID=$(cat "$PIDFILE")
+    if kill -0 "$PID" 2>/dev/null; then
+        kill "$PID"
+        echo "Sent SIGTERM to Xorg (PID $PID)..."
+        sleep 1
+        # Force kill if still alive
+        if kill -0 "$PID" 2>/dev/null; then
+            echo "Xorg still running, sending SIGKILL..."
+            kill -9 "$PID"
+        fi
+    else
+        echo "Xorg PID $PID not running."
+    fi
+
+    rm -f "$XORG_PIDFILE"
+    rm -f "$XORG_LOG_FILE"
+    echo "Xorg stopped."
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+
