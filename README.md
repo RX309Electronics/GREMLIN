@@ -1,4 +1,4 @@
-# In ALPHA
+# Currently in Alpha-Stable
 
 # Introduction/Description
 You might have already read the description, but this project builds a functional, pretty fully-featured Embedded Linux distro that uses Xorg and Supports SDL. It is primarily intended to run your graphical apps that might need an os backbone. This is a hobby project and i primarily made it for my own projects so i included a lot of stuff inside of it that is handy to use, but of course you can edit the configuration file and rip stuff out or add stuff in. Its based on buildroot, a build environment and toolset for building embedded linuxes, that have the stuff you select, compiled in and nothing else, unlike a traditional distro. This makes it so depending on what you select, you wont have all the bloat or overhang like a traditional GNU/Linux distro, and also no standard packagemanager or installer. This project builds a initrd, but also builds a ext2/ext4 image you can directly flash to a drive, and it builds a linux kernel of course! Its primarily intended for running python GUI Apps like with sdl or Pygame, and it has pip package manager pre-installed. On first deployment, you might need to implement some logic yourself that it downloads all dependancies and then boots the application. 
@@ -54,6 +54,7 @@ If you need to modify specific elements, cd into the 'buildroot' folder and then
 
 # (Remote) Administration
 You can ssh into the system running the distro, or hook up a keyboard (and or mouse) and then switch tty or enter some UART console.
+
 
 
 
