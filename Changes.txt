@@ -1,0 +1,2 @@
+Patched Services.sh and made it so the output of App_init.sh goes to the console
+Added App_init.sh placeholder

@@ -44,9 +44,10 @@ Currently only X86_64, but i want to expand it to Arm platforms (raspberry pi an
 2. Install all the typical tools: which, sed, make, binutils, build-essential, gcc, g++, bash, patch, perl, tar, cpio, unzip, rsync, findutils, bc, awk, wget, curl, qemu, ncurses
 3. cd into the directory of the project.
 4. execute './prepare.sh' to prepare the build. This downloads buildrooit source code and applies configurations.
-5. execute './build.sh'. It will initially ask if you want to do any before-build modifications. Answer either y/n and it will start building. Please note: This can take quite some time on slow/old systems, just be patient.
-6. If everything went well, it should say '[Build SUCCESS]'in terminal.
-7. (Optional) Try it out by executing './Test.sh', which will launch qemu and boot up your distro as a RAMDISK initially (Unless you remove the rootfs.cpio, then it auto falls back to using the disk image).
+5. Create/copy over your App_init.sh to /System/App and make sure its executable and if relevant, also copy over the Application itself and its files. 
+6. execute './build.sh'. It will initially ask if you want to do any before-build modifications. Answer either y/n and it will start building. Please note: This can take quite some time on slow/old systems, just be patient.
+7. If everything went well, it should say '[Build SUCCESS]'in terminal.
+8. (Optional) Try it out by executing './Test.sh', which will launch qemu and boot up your distro as a RAMDISK initially (Unless you remove the rootfs.cpio, then it auto falls back to using the disk image).
 
 # How to modify the build?
 If you need to modify the buildroot or kernel config, simply run './build.sh' again and it will prompt you if you want to modify the buildroot config (and if the kernel has been built), the kernel config. For this it will open the easy to use ncurses based buildroot and linux menuconfig. Apply configurations in this menu and hit save, then it auto continues to the build. If you need to modify any of the Init scripts or add Services/yourmapplication binary,go to the buildroot-external/overlay directory and apply modifications inside here, as this overlay gets copied everytime to the targets root filesystem. Changing the files in output/target in the buildroot folder will not be perssistent. The whole overlay directory will get copied over as it is, so overlay/etc will be copied as /etc in the target rootfs folder. 

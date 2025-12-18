@@ -55,9 +55,11 @@ start() {
         matchbox-window-manager -use_titlebar no >> "$APP_LOG" 2>&1 &
         sleep 0.5
 
-        "$APP_DIR/$APP_EXEC" >> "$APP_LOG" 2>&1 &
+        # Launch application
+        "$APP_DIR/$APP_EXEC" 2>&1 | tee -a "$APP_LOG" &
         APP_PID=$!
         echo "$APP_PID" > "$APP_PID_FILE"
+
 
         sleep 1
 
