@@ -66,14 +66,14 @@ start() {
         else
             echo "[App Launch FAIL]"
             echo "Falling back to developer shell... Please look at the logfile '$APP_LOG' to see what failed"
-            exec xterm -e /bin/sh
+            exit 1
         fi
 
 
     else
         echo "[App Launch FAIL]"
         echo "ERROR: Failed to Launch Application. Application directory is not available. Falling back to developer shell."
-        exec xterm -e /bin/sh
+        exit 1
     fi
 }
 
