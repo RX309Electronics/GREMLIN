@@ -1,2 +1,7 @@
-Patched Services.sh and made it so the output of App_init.sh goes to the console
+Patched Services.sh and made it so the output of App_init.sh goes to the console but also logfile
 Added App_init.sh placeholder
+Patched build.sh to not clear the console when an build error occurs.
+Patched python3 package to enable tkinter
+Added logging to build.sh
+added openGL
+Added tweaks step to prepare.sh

@@ -12,7 +12,7 @@ sleep 1
 if [ ! -d "buildroot" ]; then
     if [ ! -f "buildroot.tar.xz" ]; then
         echo "[Download Buildroot]"
-        wget "$BR_URL" -O buildroot.tar.xz >> "$CONFIGURE_LOG" 2>&1
+        wget "$BR_URL" -O buildroot.tar.xz | tee -a "$CONFIGURE_LOG" 2>&1
         sleep 1
         echo "Done!"
         sleep 1
@@ -20,7 +20,7 @@ if [ ! -d "buildroot" ]; then
 
     echo "[Extract Buildroot]"
     mkdir -p buildroot
-    tar -xvf buildroot.tar.xz -C buildroot --strip-components=1 >> "$CONFIGURE_LOG" 2>&1
+    tar -xvf buildroot.tar.xz -C buildroot --strip-components=1 | tee -a "$CONFIGURE_LOG" 2>&1
     sleep 1
     echo "Done!"
 else
@@ -34,7 +34,7 @@ if [ ! -f "buildroot/.config" ]; then
     echo "[Configure Buildroot]"
     sleep 1
     cd buildroot
-    make pc_x86_64_efi_defconfig >> "../$CONFIGURE_LOG" 2>&1
+    make pc_x86_64_efi_defconfig | tee -a "../$CONFIGURE_LOG" 2>&1
     echo "Copying GREMLIN config..."
     cp "../$BR_CONFIG" .config
     echo "Done!"
@@ -49,12 +49,17 @@ else
         echo "[(Re)Configure Buildroot]"
         sleep 1
         cd buildroot
-        make pc_x86_64_efi_defconfig >> "../$CONFIGURE_LOG" 2>&1
+        make pc_x86_64_efi_defconfig | tee -a "../$CONFIGURE_LOG" 2>&1
         cp "../$BR_CONFIG" .config
         echo "Done!"
         cd ..
     fi
 fi
+
+# Patch
+echo "[Apply Tweaks]"
+cp buildroot-external/tweaks/Config.in buildroot/package/python3/
+cp buildroot-external/tweaks/python3.mk buildroot/package/python3/
 
 # Cleanup
 echo "[Cleanup]"
