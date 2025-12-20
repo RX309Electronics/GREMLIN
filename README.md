@@ -54,6 +54,9 @@ Currently only X86_64, but i want to expand it to Arm platforms (raspberry pi an
 If you need to modify the buildroot or kernel config, simply run './build.sh' again and it will prompt you if you want to modify the buildroot config (and if the kernel has been built), the kernel config. For this it will open the easy to use ncurses based buildroot and linux menuconfig. Apply configurations in this menu and hit save, then it auto continues to the build. If you need to modify any of the Init scripts or add Services/yourmapplication binary,go to the buildroot-external/overlay directory and apply modifications inside here, as this overlay gets copied everytime to the targets root filesystem. Changing the files in output/target in the buildroot folder will not be perssistent. The whole overlay directory will get copied over as it is, so overlay/etc will be copied as /etc in the target rootfs folder. 
 If you need to modify specific elements, cd into the 'buildroot' folder and then execute 'make {package_name}-menuconfig'. (eg: make linux-menuconfig, make busybox-menuconfig). 
 
+# Hardware support
+Curently very mixed results but will do some more testing. Works atleast in QEMU Vm, and ramdisk mostly works on real hardware. Kernel tweaking and fine tuning is still not done
+
 # (Remote) Administration
 You can ssh into the system running the distro, or hook up a keyboard (and or mouse) and then switch tty or enter some UART console.
 
