@@ -5,3 +5,5 @@ Patched python3 package to enable tkinter
 Added logging to build.sh
 added openGL
 Added tweaks step to prepare.sh
+modified the Test.sh script to enable to boot either the ramdisk or disk.img
+
