@@ -56,22 +56,22 @@ fi
 # Build GREMLIN
 echo "[Build GREMLIN]"
 make -j $(nproc) | tee -a "$BUILD_LOG"
-exitcode=$?
+echo $? > $exitcode
 
 
 # First check if build completed with no errors, Then apply post-build tweaks.
-if [ ! $exitcode -eq 0 ]; then
-    echo "[Build FAILED]"
-    echo "Exit code: $exitcode"
+if [ $exitcode -ne 0 ]; then
+    echo "[Build FAIL]"
+    echo "ERROR: Build process exited with error code $exitcode"
     exit $exitcode
 else
     clear
-    touch $BUILD_MARKER
     echo "[Apply Post-Build tweaks]"
     make rootfs-cpio
     pb_exitcode=$?
     if [ $pb_exitcode -eq 0 ]; then
         echo "[Build SUCCESS]"
+        touch $BUILD_MARKER
         exit 0
     fi
 fi
