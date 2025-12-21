@@ -55,7 +55,7 @@ If you need to modify the buildroot or kernel config, simply run './build.sh' ag
 If you need to modify specific elements, cd into the 'buildroot' folder and then execute 'make {package_name}-menuconfig'. (eg: make linux-menuconfig, make busybox-menuconfig). 
 
 # Hardware support
-Curently very mixed results but will do some more testing. Works atleast in QEMU Vm, and ramdisk mostly works on real hardware. Kernel tweaking and fine tuning is still not done
+Curently very mixed results but will do some more testing. Works atleast in QEMU Vm, and ramdisk mostly works on real hardware. Kernel tweaking and fine tuning is still not complete, but works on baremetal already. Audio, network and Xorg.Needs more hw testing. Also bootable from usb!
 
 # (Remote) Administration
 You can ssh into the system running the distro, or hook up a keyboard (and or mouse) and then switch tty or enter some UART console.
