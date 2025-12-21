@@ -6,4 +6,5 @@ Added logging to build.sh
 added openGL
 Added tweaks step to prepare.sh
 modified the Test.sh script to enable to boot either the ramdisk or disk.img
+Added functionality to be able to boot from not only an initrd but also a ext2/ext4 filesystem
 
