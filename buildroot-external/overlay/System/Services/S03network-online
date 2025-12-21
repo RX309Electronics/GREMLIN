@@ -1,0 +1,56 @@
+#!/bin/sh
+
+IFACE=""
+TIMEOUT=20   # seconds
+INTERVAL=1
+
+start() {
+    echo "Waiting for network to become online..."
+
+    if [ -z "$IFACE" ]; then
+        IFACE=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2; exit}')
+    fi
+
+    if [ -z "$IFACE" ]; then
+        echo "No network interface found"
+        return 1
+    fi
+
+    echo "Using interface: $IFACE"
+
+    elapsed=0
+    while [ $elapsed -lt $TIMEOUT ]; do
+        if ip link show "$IFACE" | grep -q "UP" &&
+           ip addr show "$IFACE" | grep -q "inet "; then
+            echo "Network is online"
+            return 0
+        fi
+
+        sleep $INTERVAL
+        elapsed=$((elapsed + INTERVAL))
+    done
+
+    echo "Network did not come online after ${TIMEOUT}s"
+    return 1
+}
+
+stop() {
+    echo "Service is not a daemon and thus is not stopped."
+    return 0
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+case "$1" in
+    start) start ;;
+    stop) stop ;;
+    restart) restart ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac

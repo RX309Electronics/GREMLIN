@@ -9,6 +9,7 @@ modified the Test.sh script to enable to boot either the ramdisk or disk.img
 Added functionality to be able to boot from not only an initrd but also a ext2/ext4 filesystem
 removed pbscript cause its not needed and was causing issues
 modified buildroot.config
-added hda
-added mpg123 and vlc in buildroot config
+added S03network-online service that waits till the network is online
+modified Services.sh to include a shutdown section
+modified build.sh yet again, to include the actions the previous pbscript had
 

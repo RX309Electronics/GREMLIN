@@ -1,7 +1,6 @@
 #!/bin/sh
 
 SERVICES_DIR="/System/Services"
-PIDS_FILE="/tmp/stage2_init.pids"
 LOG_DIR="/var/log/services"
 APP_DIR="/System/App"
 APP_EXEC="App_init.sh"
@@ -9,7 +8,6 @@ APP_LOG="/var/log/RootApp.log"
 APP_PID_FILE="/tmp/rootapp.pid"
 
 mkdir -p "$LOG_DIR"
-: > "$PIDS_FILE"
 
 start() {
     echo "[Init Stage2 Started]"
@@ -20,6 +18,7 @@ start() {
         return 1
     }
 
+    # Start services in ascending order
     for service in "$SERVICES_DIR"/S[0-9][0-9]*; do
         [ ! -f "$service" ] && continue
         [ ! -x "$service" ] && {
@@ -55,11 +54,10 @@ start() {
         matchbox-window-manager -use_titlebar no >> "$APP_LOG" 2>&1 &
         sleep 0.5
 
-        # Launch application
+        # Launch application (console + logfile)
         "$APP_DIR/$APP_EXEC" 2>&1 | tee -a "$APP_LOG" &
         APP_PID=$!
         echo "$APP_PID" > "$APP_PID_FILE"
-
 
         sleep 1
 
@@ -67,14 +65,12 @@ start() {
             echo "[App Launch SUCCESS]"
         else
             echo "[App Launch FAIL]"
-            echo "Falling back to developer shell... Please look at the logfile '$APP_LOG' to see what failed"
+            echo "Falling back to developer shell... Check '$APP_LOG'"
             exit 1
         fi
-
-
     else
         echo "[App Launch FAIL]"
-        echo "ERROR: Failed to Launch Application. Application directory is not available. Falling back to developer shell."
+        echo "ERROR: Application not found or not executable"
         exit 1
     fi
 }
@@ -82,13 +78,51 @@ start() {
 stop() {
     echo "[Init Stage2 Shutting down...]"
 
+    #
+    # 1) Stop application FIRST
+    #
     if [ -f "$APP_PID_FILE" ]; then
         APP_PID=$(cat "$APP_PID_FILE")
+
         if kill -0 "$APP_PID" 2>/dev/null; then
             echo "Stopping application (PID $APP_PID)..."
             kill "$APP_PID"
+
+            # Give it time to exit cleanly
+            sleep 2
+
+            if kill -0 "$APP_PID" 2>/dev/null; then
+                echo "Application did not exit, forcing kill..."
+                kill -9 "$APP_PID"
+            fi
         fi
+
         rm -f "$APP_PID_FILE"
+    fi
+
+
+    if [ -d "$SERVICES_DIR" ]; then
+        for service in $(ls -r "$SERVICES_DIR"/S[0-9][0-9]* 2>/dev/null); do
+            [ ! -f "$service" ] && continue
+            [ ! -x "$service" ] && continue
+
+            service_name=$(basename "$service")
+            logfile="$LOG_DIR/$service_name.log"
+
+            echo -n "Stopping Service: $service_name ... "
+
+            "$service" stop >> "$logfile" 2>&1
+            status=$?
+
+            if [ $status -eq 0 ]; then
+                echo "[OK]"
+            else
+                echo "[FAILED]"
+                echo "  ↳ see $logfile"
+            fi
+
+            sleep 0.2
+        done
     fi
 
     echo "[Init Stage2 Shutdown Completed!]"

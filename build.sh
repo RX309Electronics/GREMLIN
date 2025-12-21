@@ -67,6 +67,9 @@ if [ $exitcode -ne 0 ]; then
 else
     clear
     echo "[Apply Post-Build tweaks]"
+    rm -rf output/target/System/Services
+    rm -rf output/target/etc/init.d
+    sleep 1
     make rootfs-cpio rootfs-ext2
     pb_exitcode=$?
     if [ $pb_exitcode -eq 0 ]; then
