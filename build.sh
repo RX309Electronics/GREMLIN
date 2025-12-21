@@ -67,7 +67,7 @@ if [ $exitcode -ne 0 ]; then
 else
     clear
     echo "[Apply Post-Build tweaks]"
-    make rootfs-cpio
+    make rootfs-cpio rootfs-ext2
     pb_exitcode=$?
     if [ $pb_exitcode -eq 0 ]; then
         echo "[Build SUCCESS]"
