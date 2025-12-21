@@ -1,37 +1,30 @@
 #!/bin/sh
 
 IFACE=""
-TIMEOUT=20   # seconds
+TIMEOUT=2   # seconds
 INTERVAL=1
+PING_TARGET="8.8.8.8"   # Google DNS
+DNS_TEST="bing.com"     # Domain resolution test
+MAX_ATTEMPTS=5
+
+
+check_network() {
+    ip route get "$PING_TARGET" >/dev/null 2>&1 && \
+    ping -c 1 -W 2 "$PING_TARGET" >/dev/null 2>&1 && \
+    ping -c 1 -W 2 "$DNS_TEST" >/dev/null 2>&1
+}
 
 start() {
-    echo "Waiting for network to become online..."
-
-    if [ -z "$IFACE" ]; then
-        IFACE=$(ip -o link show | awk -F': ' '$2 != "lo" {print $2; exit}')
-    fi
-
-    if [ -z "$IFACE" ]; then
-        echo "No network interface found"
-        return 1
-    fi
-
-    echo "Using interface: $IFACE"
-
-    elapsed=0
-    while [ $elapsed -lt $TIMEOUT ]; do
-        if ip link show "$IFACE" | grep -q "UP" &&
-           ip addr show "$IFACE" | grep -q "inet "; then
-            echo "Network is online"
+    attempts=0
+    while [ $attempts -lt $MAX_ATTEMPTS ]; do
+        if check_network; then
+            echo "✅ Interface is initialised!"
             return 0
         fi
-
-        sleep $INTERVAL
-        elapsed=$((elapsed + INTERVAL))
+        echo "⌛ Waiting for network to come online (attempt $((attempts + 1)))"
+        attempts=$((attempts + 1))
+        sleep "$TIMEOUT"
     done
-
-    echo "Network did not come online after ${TIMEOUT}s"
-    return 1
 }
 
 stop() {
