@@ -71,6 +71,7 @@ else
     rm -rf output/target/etc/init.d
     sleep 1
     make rootfs-cpio rootfs-ext2
+    cp "../$BR_EXTERNAL/configs/grub.cfg" "output/images/efi-part/EFI/BOOT/"
     pb_exitcode=$?
     if [ $pb_exitcode -eq 0 ]; then
         echo "[Build SUCCESS]"
